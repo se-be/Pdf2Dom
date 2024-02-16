@@ -1,12 +1,12 @@
 package org.fit.pdfdom;
 
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.junit.Test;
-
 import java.awt.geom.Rectangle2D;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.junit.jupiter.api.Test;
 
 public class TestPageRotation
 {

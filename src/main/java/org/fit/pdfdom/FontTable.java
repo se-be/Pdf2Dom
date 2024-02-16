@@ -14,9 +14,9 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.fit.pdfdom.resource.HtmlResource;
-import org.mabb.fontverter.FVFont;
-import org.mabb.fontverter.FontVerter;
-import org.mabb.fontverter.pdf.PdfFontExtractor;
+//import org.mabb.fontverter.FVFont;
+//import org.mabb.fontverter.FontVerter;
+//import org.mabb.fontverter.pdf.PdfFontExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -176,16 +176,16 @@ public class FontTable
             fileEnding = "otf";
 
             byte[] fontData = fontFile.toByteArray();
-            byte[] fvFontData = null;
-            try {
-                FVFont font = FontVerter.readFont(fontData);
-                fvFontData = tryNormalizeFVFont(font);
-            } catch (IOException e) {
-                log.warn("Unsupported FontFile found. Normalisation will be skipped.");
-            }
-
-            if (fvFontData != null && fvFontData.length != 0)
-                fontData = fvFontData;
+//            byte[] fvFontData = null;
+//            try {
+//                FVFont font = FontVerter.readFont(fontData);
+//                fvFontData = tryNormalizeFVFont(font);
+//            } catch (IOException e) {
+//                log.warn("Unsupported FontFile found. Normalisation will be skipped.");
+//            }
+//
+//            if (fvFontData != null && fvFontData.length != 0)
+//                fontData = fvFontData;
 
             return fontData;
         }
@@ -194,19 +194,19 @@ public class FontTable
         {
             mimeType = "application/x-font-truetype";
             fileEnding = "ttf";
-            try
-            {
-                FVFont font = PdfFontExtractor.convertType0FontToOpenType((PDType0Font) baseFont);
-                byte[] fontData = tryNormalizeFVFont(font);
-
-                if (fontData.length != 0)
-                    return fontData;
-            } catch (Exception ex)
-            {
-                log.warn("Error loading type 0 with ttf descendant font '{}' Message: {} {}",
-                        fontName, ex.getMessage(), ex.getClass());
-
-            }
+//            try
+//            {
+//                FVFont font = PdfFontExtractor.convertType0FontToOpenType((PDType0Font) baseFont);
+//                byte[] fontData = tryNormalizeFVFont(font);
+//
+//                if (fontData.length != 0)
+//                    return fontData;
+//            } catch (Exception ex)
+//            {
+//                log.warn("Error loading type 0 with ttf descendant font '{}' Message: {} {}",
+//                        fontName, ex.getMessage(), ex.getClass());
+//
+//            }
 
             return descriptor.getFontFile2().toByteArray();
         }
@@ -219,41 +219,42 @@ public class FontTable
 
         private byte[] loadOtherTypeFont(PDStream fontFile) throws IOException
         {
-            // Likley Bare CFF which needs to be converted to a font supported by browsers, can be
+            // Likely Bare CFF which needs to be converted to a font supported by browsers, can be
             // other font types which are not yet supported.
-            try
-            {
-                FVFont font = FontVerter.convertFont(fontFile.toByteArray(), FontVerter.FontFormat.WOFF1);
-                mimeType = "application/x-font-woff";
-                fileEnding = font.getProperties().getFileEnding();
-
-                return font.getData();
-            } catch (Exception ex) {
-                log.error("Issue converting Bare CFF font or the font type is not supportedby Pdf2Dom, " +
-                        "Font: {} Exception: {} {}", fontName, ex.getMessage(), ex.getClass());
-
-                // don't barf completley for font conversion issue, html will still be useable without.
-                return new byte[0];
-            }
-        }
-
-        private byte[] tryNormalizeFVFont(FVFont font)
-        {
-            try
-            {
-                // browser validation can fail for many TTF fonts from pdfs
-                if (!font.isValid())
-                    font.normalize();
-
-                return font.getData();
-            } catch (Exception ex)
-            {
-                log.warn("Error normalizing font '{}' Message: {} {}",
-                        fontName, ex.getMessage(), ex.getClass());
-            }
-
+//            try
+//            {
+//                FVFont font = FontVerter.convertFont(fontFile.toByteArray(), FontVerter.FontFormat.WOFF1);
+//                mimeType = "application/x-font-woff";
+//                fileEnding = font.getProperties().getFileEnding();
+//
+//                return font.getData();
+//            } catch (Exception ex) {
+//                log.error("Issue converting Bare CFF font or the font type is not supportedby Pdf2Dom, " +
+//                        "Font: {} Exception: {} {}", fontName, ex.getMessage(), ex.getClass());
+//
+//                // don't barf completely for font conversion issue, html will still be useable without.
+//                return new byte[0];
+//            }
             return new byte[0];
         }
+
+//        private byte[] tryNormalizeFVFont(FVFont font)
+//        {
+//            try
+//            {
+//                // browser validation can fail for many TTF fonts from pdfs
+//                if (!font.isValid())
+//                    font.normalize();
+//
+//                return font.getData();
+//            } catch (Exception ex)
+//            {
+//                log.warn("Error normalizing font '{}' Message: {} {}",
+//                        fontName, ex.getMessage(), ex.getClass());
+//            }
+//
+//            return new byte[0];
+//        }
 
         public boolean equalToPDFont(PDFont compare) {
             // Appears you can have two different fonts with the same actual font name since text position font

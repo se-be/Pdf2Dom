@@ -17,23 +17,23 @@
 
 package org.fit.pdfdom;
 
-import org.fit.pdfdom.resource.SaveResourceToDirHandler;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import static org.fit.pdfdom.TestUtils.getOutputEnabled;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
-import static org.fit.pdfdom.TestUtils.getOutputEnabled;
+import org.fit.pdfdom.resource.SaveResourceToDirHandler;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class TestImages
 {
     private static final String EXTRACT_DIR = "image-extract-dir";
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir 
+    Path folder;
 
     @Test
     public void givenPdfWithImages_whenConvertedWithSaveToDirHandler_thenFirstImageSavedToDir() throws Exception
@@ -44,7 +44,7 @@ public class TestImages
         TestUtils.parseWithPdfDomTree("images.pdf", config);
         File tempFontFile = new File(getFullExtractPath() + "Untitled.png");
 
-        Assert.assertTrue(tempFontFile.exists());
+        assertTrue(tempFontFile.exists());
     }
 
     @Test
@@ -57,7 +57,7 @@ public class TestImages
         TestUtils.parseWithPdfDomTree("images.pdf", config);
         File tempFontFile = new File(getFullExtractPath() + "Untitled1.png");
 
-        Assert.assertTrue(tempFontFile.exists());
+        assertTrue(tempFontFile.exists());
     }
 
     @Test
@@ -70,17 +70,17 @@ public class TestImages
         File tempFontFile = new File(getFullExtractPath() + "PDF Document.png");
         File tempFontFile2 = new File(getFullExtractPath() + "PDF Document1.png");
 
-        Assert.assertTrue(tempFontFile.exists());
-        Assert.assertTrue(tempFontFile2.exists());
+        assertTrue(tempFontFile.exists());
+        assertTrue(tempFontFile2.exists());
     }
 
     private File getExtractDir() throws IOException
     {
-        return getOutputEnabled() ? new File(EXTRACT_DIR) : folder.newFolder(EXTRACT_DIR);
+        return getOutputEnabled() ? new File(EXTRACT_DIR) : folder.resolve(EXTRACT_DIR).toFile();
     }
 
     private String getFullExtractPath() throws IOException
     {
-        return getOutputEnabled() ? EXTRACT_DIR + "/" : folder.getRoot().getPath() + "/" + EXTRACT_DIR + "/";
+        return getOutputEnabled() ? EXTRACT_DIR + "/" : folder.resolve(EXTRACT_DIR).toAbsolutePath() + "/";
     }
 }

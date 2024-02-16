@@ -1,24 +1,26 @@
 package org.fit.pdfdom;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.hamcrest.Matchers;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.junit.Assert;
-import org.junit.Test;
-
 import static org.fit.pdfdom.TestUtils.getOutputEnabled;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.AnyOf.anyOf;
 import static org.hamcrest.core.IsNot.not;
 
 import java.io.File;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 
-import static org.hamcrest.core.AnyOf.anyOf;
+import org.apache.commons.io.FileUtils;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.hamcrest.Matchers;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.junit.jupiter.api.Test;
 
 public class TestPDFDomTree
 {
@@ -30,7 +32,7 @@ public class TestPDFDomTree
         Document html = TestUtils.parseWithPdfDomTree(testPath + "text-rendering-mode-neither.pdf");
         Element text = html.select("div[class=p]").first();
 
-        Assert.assertThat("Text element should be invisible.",
+        assertThat("Text element should be invisible.",
                 text.attr("style"), containsString("color:" + BoxStyle.transparentColor));
     }
 
@@ -43,8 +45,8 @@ public class TestPDFDomTree
         Document html = TestUtils.parseWithPdfDomTree(testPath + "text-rendering-mode-fill.pdf");
         Element text = html.select("div[class=p]").first();
 
-        Assert.assertThat(text.attr("style"), anyOf(containsString(expectedTextFillColor1), containsString(expectedTextFillColor2)));
-        Assert.assertThat(text.attr("style"), not(containsString("webkit-text-stroke")));
+        assertThat(text.attr("style"), anyOf(containsString(expectedTextFillColor1), containsString(expectedTextFillColor2)));
+        assertThat(text.attr("style"), not(containsString("webkit-text-stroke")));
     }
 
     @Test
@@ -53,10 +55,10 @@ public class TestPDFDomTree
         Document html = TestUtils.parseWithPdfDomTree(testPath + "text-rendering-mode-stroke.pdf");
         Element text = html.select("div[class=p]").first();
 
-        Assert.assertThat("Text element should not have fill color.",
+        assertThat("Text element should not have fill color.",
                 text.attr("style"), containsString("color:" + BoxStyle.transparentColor));
 
-        Assert.assertThat("Text element is missing stroke color.",
+        assertThat("Text element is missing stroke color.",
                 text.attr("style"), containsString("webkit-text-stroke: #ff00ff"));
     }
 
@@ -66,10 +68,10 @@ public class TestPDFDomTree
         Document html = TestUtils.parseWithPdfDomTree(testPath + "text-rendering-mode-stroke-and-fill.pdf");
         Element text = html.select("div[class=p]").first();
 
-        Assert.assertThat("Text element is missing fill color.",
+        assertThat("Text element is missing fill color.",
                 text.attr("style"), Matchers.either(containsString("color:#9af0e7")).or(containsString("color:#9af0e6"))); //allow some rounding while transforming from HSV
 
-        Assert.assertThat("Text element is missing stroke color.",
+        assertThat("Text element is missing stroke color.",
                 text.attr("style"), containsString("webkit-text-stroke: #ff00ff"));
     }
 
@@ -79,10 +81,10 @@ public class TestPDFDomTree
         Document htmlDoc = convertWithPageRange(testPath + "3-page-document.pdf", 0, 1);
         String htmlText = htmlDoc.html();
 
-        Assert.assertThat(htmlText, containsString("#1"));
+        assertThat(htmlText, containsString("#1"));
 
-        Assert.assertThat(htmlText, not(containsString("#2")));
-        Assert.assertThat(htmlText, not(containsString("#3")));
+        assertThat(htmlText, not(containsString("#2")));
+        assertThat(htmlText, not(containsString("#3")));
     }
 
     public static Document convertWithPageRange(String resource, int start, int end) throws Exception
@@ -93,14 +95,14 @@ public class TestPDFDomTree
 
         if (getOutputEnabled()) {
             File debugOutFile = new File(resource.replace(".pdf", ".html").replaceAll(".*/", ""));
-            FileUtils.write(debugOutFile, doc.outerHtml());
+            FileUtils.write(debugOutFile, doc.outerHtml(), Charset.defaultCharset());
         }
         return doc;
     }
 
     public static Document parseWithPdfDomTree(InputStream is, int start, int end) throws Exception
     {
-        PDDocument pdf = PDDocument.load(is);
+        PDDocument pdf = Loader.loadPDF(new RandomAccessReadBuffer(is));
         PDFDomTree parser = new PDFDomTree();
         parser.setStartPage(start);
         parser.setEndPage(end);

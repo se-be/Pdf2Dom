@@ -456,7 +456,7 @@ public class PDFDomTree extends PDFBoxTree
     @Override
     protected void updateFontTable()
     {
-        // skip font processing completley if ignore fonts mode to optimize processing speed
+        // skip font processing completely if ignore fonts mode to optimize processing speed
         if (!(config.getFontHandler() instanceof IgnoreResourceHandler))
             super.updateFontTable();
     }

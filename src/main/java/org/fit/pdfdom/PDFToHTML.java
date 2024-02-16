@@ -20,12 +20,13 @@
 package org.fit.pdfdom;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.RandomAccessReadBufferedFile;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.fit.pdfdom.resource.HtmlResourceHandler;
 import org.fit.pdfdom.resource.IgnoreResourceHandler;
@@ -67,10 +68,8 @@ public class PDFToHTML
 
         PDFDomTreeConfig config = parseOptions(args);
 
-        PDDocument document = null;
-        try
+        try (PDDocument document = Loader.loadPDF(new RandomAccessReadBufferedFile(infile)))
         {
-            document = PDDocument.load(new File(infile));
             PDFDomTree parser = new PDFDomTree(config);
             //parser.setDisableImageData(true);
             Writer output = new PrintWriter(outfile, "utf-8");
@@ -81,19 +80,6 @@ public class PDFToHTML
         {
             System.err.println("Error: " + e.getMessage());
             e.printStackTrace();
-        }
-        finally
-        {
-            if( document != null )
-            {
-                try
-                {
-                    document.close();
-                } catch (IOException e) { 
-                    System.err.println("Error: " + e.getMessage());
-                    //e.printStackTrace();
-                }
-            }
         }
     }
 

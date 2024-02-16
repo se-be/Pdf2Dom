@@ -1,18 +1,21 @@
 package org.fit.pdfdom;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.junit.Assert;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.awt.geom.Rectangle2D;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Properties;
 
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.number.OrderingComparison.lessThan;
 
 public class TestUtils
@@ -33,7 +36,7 @@ public class TestUtils
 
         if (getOutputEnabled()) {
             File debugOutFile = new File(resource.replace(".pdf", ".html").replaceAll(".*/", ""));
-            FileUtils.write(debugOutFile, doc.outerHtml());
+            FileUtils.write(debugOutFile, doc.outerHtml(), Charset.defaultCharset());
         }
 
         return doc;
@@ -47,7 +50,7 @@ public class TestUtils
     public static Document parseWithPdfDomTree(InputStream is, PDFDomTreeConfig config)
             throws IOException, ParserConfigurationException, TransformerException
     {
-        PDDocument pdf = PDDocument.load(is);
+        PDDocument pdf = Loader.loadPDF(new RandomAccessReadBuffer(is));
         PDFDomTree parser = new PDFDomTree(config);
 
         Writer output = new StringWriter();
@@ -94,40 +97,40 @@ public class TestUtils
     {
         String message = String.format(areaAssertMessage, "bottom");
 
-        Assert.assertThat(message, target.y, greaterThan(container.getHeight() / 2));
-        Assert.assertThat(message, target.y, lessThan(container.getHeight() + delta));
+        assertThat(message, target.y, greaterThan(container.getHeight() / 2));
+        assertThat(message, target.y, lessThan(container.getHeight() + delta));
     }
 
     public static void assertInTopArea(Rectangle2D.Double target, Rectangle2D.Double container)
     {
         String message = String.format(areaAssertMessage, "top");
 
-        Assert.assertThat(message, target.y, lessThan(container.getHeight() / 2));
-        Assert.assertThat(message, target.y, greaterThan(-delta));
+        assertThat(message, target.y, lessThan(container.getHeight() / 2));
+        assertThat(message, target.y, greaterThan(-delta));
     }
 
     public static void assertInLeftArea(Rectangle2D.Double target, Rectangle2D.Double container)
     {
         String message = String.format(areaAssertMessage, "left");
 
-        Assert.assertThat(message, target.x, lessThan(container.getWidth() / 2));
-        Assert.assertThat(message, target.x, greaterThan(-delta));
+        assertThat(message, target.x, lessThan(container.getWidth() / 2));
+        assertThat(message, target.x, greaterThan(-delta));
     }
 
     public static void assertInRightArea(Rectangle2D.Double target, Rectangle2D.Double container)
     {
         String message = String.format(areaAssertMessage, "right");
 
-        Assert.assertThat(message, target.x, greaterThan(container.getWidth() / 2));
-        Assert.assertThat(message, target.x, lessThan(container.getWidth() + delta));
+        assertThat(message, target.x, greaterThan(container.getWidth() / 2));
+        assertThat(message, target.x, lessThan(container.getWidth() + delta));
     }
 
     public static void assertNotOutsideOf(Rectangle2D.Double target, Rectangle2D.Double container)
     {
         String message = "Target rectangle is outside of container rectangle.";
 
-        Assert.assertThat(message, target.x + target.width, lessThan(container.width + delta));
-        Assert.assertThat(message, target.y + target.height, lessThan(container.height + delta));
+        assertThat(message, target.x + target.width, lessThan(container.width + delta));
+        assertThat(message, target.y + target.height, lessThan(container.height + delta));
     }
 
     public static void assertInBottomRightCorner(Rectangle2D.Double target, Rectangle2D.Double container)

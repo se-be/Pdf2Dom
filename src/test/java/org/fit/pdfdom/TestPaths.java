@@ -17,20 +17,21 @@
 
 package org.fit.pdfdom;
 
-import org.apache.commons.codec.binary.Base64;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.junit.Assert;
-import org.junit.Test;
-import org.mabb.gfxassert.geom.ShapeSubset;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mabb.gfxassert.GfxAssertMatchers.containsColor;
+import static org.mabb.gfxassert.geom.ShapeSubset.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 
-import static org.mabb.gfxassert.GfxAssertMatchers.containsColor;
-import static org.mabb.gfxassert.geom.ShapeSubset.*;
+import javax.imageio.ImageIO;
+
+import org.apache.commons.codec.binary.Base64;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.junit.jupiter.api.Test;
 
 public class TestPaths
 {
@@ -40,7 +41,7 @@ public class TestPaths
         Document html = TestUtils.parseWithPdfDomTree("/shapes/arrow-path.pdf");
         Element image = html.select("img").first();
 
-        Assert.assertNotNull(image);
+        assertNotNull(image);
     }
 
     @Test
@@ -55,7 +56,7 @@ public class TestPaths
         BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageData));
 
         Color fillColor = new Color(217, 217, 217);
-        Assert.assertThat(image, containsColor(fillColor).in(bottomArea()));
-        Assert.assertThat(image, containsColor(fillColor).in(topArea()));
+        assertThat(image, containsColor(fillColor).in(bottomArea()));
+        assertThat(image, containsColor(fillColor).in(topArea()));
     }
 }
