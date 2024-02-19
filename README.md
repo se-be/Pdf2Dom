@@ -1,6 +1,6 @@
 # Pdf2Dom
 
-[![Build Status](https://travis-ci.org/radkovo/Pdf2Dom.png)](https://travis-ci.org/radkovo/Pdf2Dom)
+[![Maven Check](https://github.com/se-be/Pdf2Dom/actions/workflows/maven-check.yml/badge.svg)](https://github.com/se-be/Pdf2Dom/actions/workflows/maven-check.yml)
 
 This project is a fork of [Pdf2Dom](https://github.com/radkovo/Pdf2Dom) from [radkovo](https://github.com/radkovo) which is not highly maintained anymore.
 The point of this fork is to update Pdf2Dom to work with [pdfbox](https://github.com/apache/pdfbox) version 3 API.
