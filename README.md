@@ -5,6 +5,8 @@
 This project is a fork of [Pdf2Dom](https://github.com/radkovo/Pdf2Dom) from [radkovo](https://github.com/radkovo) which is not highly maintained anymore.
 The point of this fork is to update Pdf2Dom to work with [pdfbox](https://github.com/apache/pdfbox) version 3 API.
 
+In order to do that I had to "disable" font conversion as it was using [FontVerter](https://github.com/m-abboud/FontVerter) which is also not working with fontbox version 3.
+
 ## Description from the original project.
 
 Pdf2Dom is a PDF parser that converts the documents to a HTML DOM representation. The obtained DOM tree may be then
