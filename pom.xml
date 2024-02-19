@@ -13,9 +13,9 @@
 		<maven>3.0.4</maven>
 	</prerequisites>
 
-	<groupId>net.sf.cssbox</groupId>
+	<groupId>io.github.se-be</groupId>
 	<artifactId>pdf2dom</artifactId>
-	<version>3.0.0-SNAPSHOT</version>
+	<version>3.0.0RC2</version>
 	<name>Pdf2Dom</name>
 	<description>Pdf2Dom is a PDF parser that converts the documents to a HTML DOM representation. The obtained DOM tree may be then serialized to a HTML file or further processed. The inline CSS definitions contained in the resulting document are used for making the HTML page as similar as possible to the PDF input. A command-line utility for converting the PDF documents to HTML is included in the distribution package. Pdf2Dom may be also used as an independent Java library with a standard DOM interface for your DOM-based applications or as an alternative parser for the CSSBox rendering engine in order to add the PDF processing capability to CSSBox.</description>
 	<url>https://github.com/se-be/Pdf2Dom</url>
@@ -74,7 +74,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Automatic-Module-Name>net.sf.cssbox.pdf2dom</Automatic-Module-Name>
+                            <Automatic-Module-Name>io.github.se_be.pdf2dom</Automatic-Module-Name>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -101,7 +101,7 @@
 					</descriptors>
 					<archive>
 						<manifest>
-							<mainClass>org.fit.pdfdom.PDFToHTML</mainClass>
+							<mainClass>io.github.seb_be.pdfdom.PDFToHTML</mainClass>
 						</manifest>
 					</archive>
 					<finalName>PDFToHTML</finalName>
@@ -136,14 +136,13 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.13</version>
+				<groupId>org.sonatype.central</groupId>
+				<artifactId>central-publishing-maven-plugin</artifactId>
+				<version>0.3.0</version>
 				<extensions>true</extensions>
 				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+					<publishingServerId>central</publishingServerId>
+					<tokenAuth>true</tokenAuth>
 				</configuration>
 			</plugin>
 
@@ -261,7 +260,7 @@
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<url>https://central.sonatype.org/content/repositories/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
